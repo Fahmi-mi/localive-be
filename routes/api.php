@@ -7,11 +7,13 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\OrganizationMemberController;
 use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\PasswordController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\TourCategoryController;
 use App\Http\Controllers\Api\TourPackageController;
 use App\Http\Controllers\Api\TrackRecordController;
 use App\Http\Controllers\Api\UmkmCategoryController;
 use App\Http\Controllers\Api\UmkmController;
+use App\Http\Controllers\Api\VillageInfoController;
 use App\Http\Controllers\Api\VillagePotentialController;
 use App\Http\Controllers\Api\WhatsappNumberController;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +58,8 @@ Route::get("/tour-packages/{tour_package}", [
     TourPackageController::class,
     "show",
 ]);
+Route::get("/profile", [ProfileController::class, "show"]);
+Route::get("/village-info", [VillageInfoController::class, "show"]);
 
 // Authenticated routes
 Route::middleware("auth:sanctum")->group(function () {
@@ -173,6 +177,21 @@ Route::middleware("auth:sanctum")->group(function () {
     ]);
     Route::post("/tour-packages/{id}/unpublish", [
         TourPackageController::class,
+        "unpublish",
+    ]);
+
+    // Singletons
+    Route::patch("/profile", [ProfileController::class, "update"]);
+    Route::post("/profile/publish", [ProfileController::class, "publish"]);
+    Route::post("/profile/unpublish", [ProfileController::class, "unpublish"]);
+
+    Route::patch("/village-info", [VillageInfoController::class, "update"]);
+    Route::post("/village-info/publish", [
+        VillageInfoController::class,
+        "publish",
+    ]);
+    Route::post("/village-info/unpublish", [
+        VillageInfoController::class,
         "unpublish",
     ]);
 
