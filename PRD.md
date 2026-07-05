@@ -1,7 +1,7 @@
 # PRD: Localive Backend — API & CMS untuk Website Desa Wisata
 
-> **Version**: 1.0 — 5 Juli 2026
-> **Status**: Draft — siap direview bersama tim frontend & PM sebelum development dimulai
+> **Version**: 1.1 — 5 Juli 2026
+> **Status**: Final
 
 ---
 
@@ -62,7 +62,6 @@ Localive Backend adalah REST API berbasis Laravel yang menjadi *single source of
 
 ### Could Have
 - Endpoint restore/trash management UI di dashboard admin (list data yang di-soft-delete, tombol pulihkan).
-- Audit log sederhana (`published_by`, siapa yang terakhir mengedit) — disebutkan sebagai kemungkinan pengembangan lanjutan, belum wajib di MVP.
 
 ### Won't Have (untuk versi ini)
 - Fitur pencarian/full-text search.
@@ -149,7 +148,7 @@ Dipilih monolith (bukan microservices) karena skala proyek kecil (single village
 | Media Processing | Intervention Image v3 | Resize, convert `.webp`, kompresi terintegrasi baik dengan Laravel. |
 | Auth | Laravel Sanctum (cookie/stateful) | Frontend & backend satu domain utama (subdomain berbeda) — cocok pakai cookie session, bukan token Bearer. |
 | Hosting / Infra | Shared Hosting cPanel (20GB) | Constraint yang sudah ditetapkan; memengaruhi keputusan image pipeline dan soft delete. |
-| CI/CD | *(belum ditentukan)* | Lihat Open Questions — perlu diputuskan (manual deploy vs Git-based deployment cPanel). |
+| CI/CD | Manual Upload | Deployment dilakukan secara manual ke cPanel sesuai kebutuhan. |
 
 ---
 
@@ -273,7 +272,7 @@ village_info (singleton)
 
 ## 9. API Design
 
-> Semua field translatable selalu dikembalikan sebagai object JSON penuh `{id, en}` — tidak ada parameter `?lang=` untuk filtering. Endpoint publik otomatis hanya mengembalikan `status = published`. `PATCH` dipakai untuk update konten (bukan `PUT`), kecuali Admin Management. `DELETE` = soft delete.
+> Semua field translatable selalu dikembalikan sebagai object JSON penuh `{id, en}` — tidak ada parameter `?lang=` untuk filtering. Endpoint publik otomatis hanya mengembalikan `status = published`. `PATCH` dipakai untuk update konten (bukan `PUT`), kecuali Admin Management. `DELETE` = soft delete. Data yang terhapus dapat dipulihkan via `POST /api/{resource}/{id}/restore`.
 
 | Method | Endpoint | Deskripsi |
 |---|---|---|
@@ -320,6 +319,7 @@ village_info (singleton)
   - CSRF protection via Sanctum (`/sanctum/csrf-cookie` sebelum login).
   - RBAC di level middleware — endpoint admin management hanya bisa diakses Super Admin.
   - Data yang sudah pernah `published` (mungkin ter-index Google/dibagikan link) dilindungi soft delete, bukan hard delete.
+- **Rate Limiting**: API dibatasi maksimal 100 request per menit per IP untuk mencegah abuse.
 - **Scalability**: Desain saat ini cukup untuk single-tenant, satu desa. Tidak dirancang multi-tenant — kalau ada kebutuhan replikasi ke desa lain, perlu redesain terpisah (di luar cakupan PRD ini).
 - **Availability**: Tidak ada SLA formal disebutkan (proyek desa, bukan skala enterprise) — target wajar untuk website informasi statis: uptime mengikuti standar shared hosting cPanel (~99%+), tanpa redundancy khusus.
 - **Konsistensi Bilingual**: Setiap konten yang tampil publik wajib lengkap ID+EN sebelum bisa `published` — ditegakkan lewat validasi di endpoint `/publish`, bukan validasi generik di setiap edit (menjaga fleksibilitas kerja bertahap admin).
@@ -339,12 +339,3 @@ village_info (singleton)
 | **Phase 7** | Testing (integrasi kontrak response dengan frontend, skenario draft tidak bocor ke publik) & Deployment cPanel | |
 
 ---
-
-## 12. Open Questions
-
-- [ ] **Slug untuk konten selain articles/tour_packages/umkm** — apakah `partners`, `village_potentials`, `track_records` juga butuh halaman detail (dan karenanya slug), atau memang cukup tampil sebagai list/section seperti asumsi saat ini? Perlu konfirmasi ke tim frontend.
-- [ ] **CI/CD & strategi deployment** — belum diputuskan apakah pakai Git-based deployment cPanel, manual upload, atau tooling lain.
-- [ ] **Audit log** (`published_by`, histori siapa mengedit apa) — belum wajib di MVP, tapi perlu diputuskan apakah masuk roadmap awal atau fase lanjutan.
-- [ ] **Endpoint restore untuk soft-deleted data** — arsitektur sudah mendukung, tapi endpoint & UI-nya belum masuk scope Phase 1–7 di atas; perlu diputuskan prioritasnya.
-- [ ] **Rate limiting / API throttling** — belum dibahas sama sekali, perlu diputuskan terutama untuk endpoint auth (mencegah brute-force login).
-- [ ] **Kebijakan backup database** — mengingat constraint shared hosting, perlu strategi backup rutin yang belum didefinisikan di PRD ini.
