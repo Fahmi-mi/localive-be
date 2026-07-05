@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->string("slug")->unique();
             $table->json("name");
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
