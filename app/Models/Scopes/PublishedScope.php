@@ -10,9 +10,15 @@ class PublishedScope implements Scope
 {
     /**
      * Apply the scope to only return published records.
+     * Skips filtering when the request is from an authenticated user
+     * so the admin dashboard can see all content including drafts.
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('status', 'published');
+        if (auth()->check()) {
+            return;
+        }
+
+        $builder->where("status", "published");
     }
 }
