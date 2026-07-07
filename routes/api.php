@@ -16,6 +16,8 @@ use App\Http\Controllers\Api\UmkmController;
 use App\Http\Controllers\Api\VillageInfoController;
 use App\Http\Controllers\Api\VillagePotentialController;
 use App\Http\Controllers\Api\WhatsappNumberController;
+use App\Http\Resources\UserResource;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Public
@@ -47,6 +49,9 @@ Route::get('/village-info', [VillageInfoController::class, 'show'])->name('villa
 
 // Authenticated
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me', function (Request $request) {
+        return response()->json(['data' => new UserResource($request->user())]);
+    })->name('me');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::post('/change-password', [PasswordController::class, 'changePassword'])->name('change-password');
 
