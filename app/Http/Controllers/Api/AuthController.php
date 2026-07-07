@@ -23,7 +23,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $request->session()->regenerate();
+        $request->hasSession() && $request->session()->regenerate();
 
         return response()->json([
             'message' => 'Login berhasil.',
@@ -38,8 +38,8 @@ class AuthController extends Controller
     {
         Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->hasSession() && $request->session()->invalidate();
+        $request->hasSession() && $request->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Logout berhasil.',

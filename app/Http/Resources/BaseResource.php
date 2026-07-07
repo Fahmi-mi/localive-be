@@ -13,26 +13,11 @@ class BaseResource extends JsonResource
      */
     protected function translatable(string $field): array
     {
-        $value = $this->resource->getAttribute($field);
-
-        if (is_string($value)) {
-            $decoded = json_decode($value, true);
-
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                $value = $decoded;
-            }
-        }
-
-        if (! is_array($value)) {
-            return [
-                'id' => (string) $value,
-                'en' => (string) $value,
-            ];
-        }
+        $translations = $this->resource->getTranslations($field);
 
         return [
-            'id' => $value['id'] ?? '',
-            'en' => $value['en'] ?? ($value['id'] ?? ''),
+            'id' => $translations['id'] ?? '',
+            'en' => $translations['en'] ?? ($translations['id'] ?? ''),
         ];
     }
 }
