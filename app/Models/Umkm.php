@@ -15,6 +15,8 @@ class Umkm extends Model
 {
     use HasTranslatableFields, HasSlug, HasPublished, HasDraftActions, ValidatesPublishable, SoftDeletes;
 
+    protected $table = 'umkm';
+
     public $translatable = ['title', 'description'];
 
     protected $fillable = [
