@@ -61,6 +61,11 @@ class TourPackageController extends Controller
     ): JsonResponse {
         $data = $request->validated();
 
+        if ($request->boolean('remove_image') && $tourPackage->image) {
+            $pipeline->delete($tourPackage->image);
+            $data['image'] = null;
+        }
+
         if ($request->hasFile('image')) {
             $data['image'] = $pipeline->replace(
                 $request->file('image'),

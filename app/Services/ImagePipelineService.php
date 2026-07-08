@@ -4,7 +4,8 @@ namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Laravel\Facades\Image;
+use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\ImageManager;
 
 class ImagePipelineService
 {
@@ -29,16 +30,17 @@ class ImagePipelineService
      *
      * @throws \InvalidArgumentException If the file exceeds 2MB.
      */
-    public function process(UploadedFile $file, string $directory = ""): string
+    public function process(UploadedFile $file, string $directory = ''): string
     {
         $this->validateSize($file);
 
-        $image = Image::read($file)->scaleDown(width: self::MAX_WIDTH);
+        $manager = app(ImageManager::class);
+        $image = $manager->decode($file)->scaleDown(width: self::MAX_WIDTH);
 
         $filename = $this->generateFilename();
         $path = $this->buildPath($directory, $filename);
 
-        Storage::disk("public")->put($path, $image->toWebp(self::QUALITY));
+        Storage::disk('public')->put($path, $image->encode(new WebpEncoder(self::QUALITY)));
 
         return $path;
     }
@@ -48,8 +50,8 @@ class ImagePipelineService
      */
     public function delete(?string $path): void
     {
-        if ($path && Storage::disk("public")->exists($path)) {
-            Storage::disk("public")->delete($path);
+        if ($path && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
         }
     }
 
@@ -72,40 +74,29 @@ class ImagePipelineService
      */
     public function url(?string $path): ?string
     {
-        return $path ? Storage::disk("public")->url($path) : null;
+        return $path ? Storage::disk('public')->url($path) : null;
     }
 
     /**
-     * Validate that the file does not exceed the maximum size.
-     *
      * @throws \InvalidArgumentException
      */
     private function validateSize(UploadedFile $file): void
     {
         if ($file->getSize() > self::MAX_SIZE_KB * 1024) {
             throw new \InvalidArgumentException(
-                sprintf(
-                    "Ukuran file melebihi batas maksimal %dKB.",
-                    self::MAX_SIZE_KB,
-                ),
+                sprintf('Ukuran file melebihi batas maksimal %dKB.', self::MAX_SIZE_KB)
             );
         }
     }
 
-    /**
-     * Generate a unique filename with .webp extension.
-     */
     private function generateFilename(): string
     {
-        return uniqid("img_", true) . ".webp";
+        return uniqid('img_', true) . '.webp';
     }
 
-    /**
-     * Build the full storage path with optional subdirectory.
-     */
     private function buildPath(string $directory, string $filename): string
     {
-        $directory = trim($directory, "/");
+        $directory = trim($directory, '/');
 
         return $directory ? "{$directory}/{$filename}" : $filename;
     }

@@ -17,6 +17,7 @@ class UpdateTourPackageRequest extends FormRequest
             'description.id' => ['nullable', 'string'],
             'description.en' => ['nullable', 'string'],
             'image' => ['nullable', new ValidImage],
+            'remove_image' => ['sometimes', 'boolean'],
         ];
     }
 }
