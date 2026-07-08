@@ -17,7 +17,9 @@ class UpdateUmkmRequest extends FormRequest
             'description.id' => ['nullable', 'string'],
             'description.en' => ['nullable', 'string'],
             'maps_link' => ['nullable', 'string', 'url'],
+            'phone' => ['nullable', 'string', 'max:20'],
             'image' => ['nullable', new ValidImage],
+            'remove_image' => ['sometimes', 'boolean'],
         ];
     }
 }
