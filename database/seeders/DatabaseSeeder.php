@@ -3,23 +3,28 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\CategorySeeder;
+use Database\Seeders\LemahAsriSeeder;
+use Database\Seeders\TourPackageSeeder;
+use Database\Seeders\UmkmSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(CategorySeeder::class);
+        $this->call(TourPackageSeeder::class);
+        $this->call(UmkmSeeder::class);
+        $this->call(LemahAsriSeeder::class);
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            "name" => "Super Admin",
+            "email" => "admin@localive.id",
+            "role" => "super_admin",
         ]);
     }
 }
