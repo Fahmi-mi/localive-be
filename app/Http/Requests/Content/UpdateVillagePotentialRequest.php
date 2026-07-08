@@ -11,6 +11,7 @@ class UpdateVillagePotentialRequest extends FormRequest
     {
         return [
             'image' => ['nullable', new ValidImage],
+            'remove_image' => ['sometimes', 'boolean'],
             'title.id' => ['required', 'string'],
             'title.en' => ['nullable', 'string'],
             'description.id' => ['nullable', 'string'],

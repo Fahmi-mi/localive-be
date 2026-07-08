@@ -54,6 +54,11 @@ class VillagePotentialController extends Controller
     ): JsonResponse {
         $data = $request->validated();
 
+        if ($request->boolean('remove_image') && $villagePotential->image) {
+            $pipeline->delete($villagePotential->image);
+            $data['image'] = null;
+        }
+
         if ($request->hasFile('image')) {
             $data['image'] = $pipeline->replace(
                 $request->file('image'),
