@@ -54,6 +54,11 @@ class PartnerController extends Controller
     ): JsonResponse {
         $data = $request->validated();
 
+        if ($request->boolean('remove_logo') && $partner->logo) {
+            $pipeline->delete($partner->logo);
+            $data['logo'] = null;
+        }
+
         if ($request->hasFile('logo')) {
             $data['logo'] = $pipeline->replace(
                 $request->file('logo'),

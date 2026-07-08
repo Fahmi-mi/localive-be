@@ -18,6 +18,7 @@ class UpdateArticleRequest extends FormRequest
             'content.en' => ['nullable', 'string'],
             'date' => ['sometimes', 'date'],
             'image' => ['nullable', new ValidImage],
+            'remove_image' => ['sometimes', 'boolean'],
         ];
     }
 }

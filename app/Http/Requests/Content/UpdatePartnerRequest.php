@@ -11,6 +11,7 @@ class UpdatePartnerRequest extends FormRequest
     {
         return [
             'logo' => ['nullable', new ValidImage],
+            'remove_logo' => ['sometimes', 'boolean'],
             'name.id' => ['required', 'string'],
             'name.en' => ['nullable', 'string'],
             'description.id' => ['nullable', 'string'],

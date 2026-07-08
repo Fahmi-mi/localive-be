@@ -57,6 +57,11 @@ class ArticleController extends Controller
     ): JsonResponse {
         $data = $request->validated();
 
+        if ($request->boolean('remove_image') && $article->image) {
+            $pipeline->delete($article->image);
+            $data['image'] = null;
+        }
+
         if ($request->hasFile('image')) {
             $data['image'] = $pipeline->replace(
                 $request->file('image'),

@@ -12,9 +12,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    /**
-     * List all admin accounts.
-     */
     public function index(): AnonymousResourceCollection
     {
         $admins = User::whereIn('role', ['super_admin', 'admin'])
@@ -22,6 +19,11 @@ class AdminController extends Controller
             ->get();
 
         return UserResource::collection($admins);
+    }
+
+    public function show(User $admin): UserResource
+    {
+        return new UserResource($admin);
     }
 
     /**

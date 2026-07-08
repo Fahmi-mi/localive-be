@@ -20,7 +20,7 @@ class Umkm extends Model
     public $translatable = ['title', 'description'];
 
     protected $fillable = [
-        'title', 'description', 'category_id', 'maps_link', 'image', 'status',
+        'title', 'description', 'category_id', 'maps_link', 'phone', 'image', 'status',
     ];
 
     protected function casts(): array

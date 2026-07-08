@@ -12,7 +12,7 @@ class ProfileResource extends BaseResource
             'id' => $this->id,
             'business_name' => $this->translatable('business_name'),
             'owner' => $this->translatable('owner'),
-            'founded_date' => $this->founded_date,
+            'founded_date' => $this->founded_date?->format('Y-m-d'),
             'location' => $this->translatable('location'),
             'phone' => $this->phone,
             'email' => $this->email,
