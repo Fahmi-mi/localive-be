@@ -15,9 +15,9 @@ class VillageInfo extends Model
 
     protected $table = 'village_info';
 
-    public $translatable = ['background', 'vision', 'mission'];
+    public $translatable = ['vision', 'mission'];
 
-    protected $fillable = ['background', 'vision', 'mission', 'status'];
+    protected $fillable = ['vision', 'mission', 'status', 'published_at'];
 
     protected function casts(): array
     {
@@ -34,7 +34,6 @@ class VillageInfo extends Model
         return static::withoutGlobalScope(PublishedScope::class)->firstOrCreate(
             [],
             [
-                'background' => json_encode(['id' => '', 'en' => '']),
                 'vision' => json_encode(['id' => '', 'en' => '']),
                 'mission' => json_encode(['id' => '', 'en' => '']),
             ]

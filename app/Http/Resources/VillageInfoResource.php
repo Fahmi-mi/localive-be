@@ -10,7 +10,6 @@ class VillageInfoResource extends BaseResource
     {
         return [
             'id' => $this->id,
-            'background' => $this->translatable('background'),
             'vision' => $this->translatable('vision'),
             'mission' => $this->translatable('mission'),
             'status' => $this->status,

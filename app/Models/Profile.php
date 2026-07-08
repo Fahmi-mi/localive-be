@@ -17,7 +17,7 @@ class Profile extends Model
 
     protected $fillable = [
         'business_name', 'owner', 'founded_date', 'location',
-        'phone', 'email', 'ig_url', 'yt_url', 'status',
+        'phone', 'email', 'ig_url', 'yt_url', 'status', 'published_at',
     ];
 
     protected function casts(): array
