@@ -111,6 +111,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Super Admin only
     Route::middleware('role:super_admin')->group(function () {
-        Route::apiResource('/admins', AdminController::class)->except(['show']);
+        Route::apiResource('/admins', AdminController::class);
     });
 });
